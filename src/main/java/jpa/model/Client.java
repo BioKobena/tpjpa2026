@@ -1,21 +1,24 @@
 package jpa.model;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
 
 @Entity
 public class Client extends User {
-    @Id
-    @GeneratedValue
-    private int id;
 
+    private String compte_bancaire;
     public Client() {
-
     }
 
-    public int getId() {
-        return this.id;
+    public Client(String compte_bancaire) {
+        this.compte_bancaire = compte_bancaire;
+    }
+
+    public void setCompteBancaire(String compte_bancaire) {
+        this.compte_bancaire = compte_bancaire;
+    }
+
+    public String getCompteBancaire() {
+        return this.compte_bancaire;
     }
 
 }

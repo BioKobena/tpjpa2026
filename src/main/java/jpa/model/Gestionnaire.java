@@ -1,22 +1,25 @@
 package jpa.model;
 
-
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
 
 @Entity
 public class Gestionnaire extends User {
 
-    @Id
-    @GeneratedValue
-    private int id;
+    private String permission;
 
     public Gestionnaire() {
 
     }
 
-    public int getId() {
-        return this.id;
+    public Gestionnaire(String permission) {
+        this.permission = permission;
+    }
+
+    public String getPermission() {
+        return this.permission;
+    }
+
+    public void setPermission(String permission) {
+        this.permission = permission;
     }
 }
