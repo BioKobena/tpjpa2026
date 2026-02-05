@@ -14,23 +14,24 @@ public class Ticket implements Serializable {
     @GeneratedValue
     private int id;
     private int prix;
-    // private Concert concert;
+    
+    @OneToOne
+    private Concert concert;
 
     public Ticket() {}
 
     public Ticket(int prix, Concert concert) {
         this.prix = prix;
-        // this.concert = concert;
+        this.concert = concert;
     }
 
-    // @OneToOne
-    // public Concert getConcert() {
-    //     return this.concert;
-    // }
+    public Concert getConcert() {
+        return this.concert;
+    }
 
-    // public void setConcert(Concert concert){
-    //     this.concert = concert;
-    // }
+    public void setConcert(Concert concert){
+        this.concert = concert;
+    }
 
     public int getId() {
         return this.id;

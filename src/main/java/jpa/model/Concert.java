@@ -22,7 +22,8 @@ public class Concert implements Serializable {
     private String description;
     private int popularite;
     private int nombre_place;
-    // private List<Ticket> ticket = new ArrayList<Ticket>();
+    @OneToMany(mappedBy = "concert", cascade = CascadeType.PERSIST)
+    private List<Ticket> ticket = new ArrayList<Ticket>();
 
     public Concert() {
     }
@@ -35,7 +36,7 @@ public class Concert implements Serializable {
         this.description = description;
         this.popularite = popularite;
         this.nombre_place = nombre_place;
-        // this.ticket = new ArrayList<Ticket>();
+        this.ticket = new ArrayList<Ticket>();
 
     }
 
@@ -43,14 +44,13 @@ public class Concert implements Serializable {
         return this.id;
     }
 
-    // @OneToMany(mappedBy = "concert", cascade = CascadeType.PERSIST)
-    // public List<Ticket> getTicket() {
-    //     return this.ticket;
-    // }
+    public List<Ticket> getTicket() {
+        return this.ticket;
+    }
 
-    // public void setTicket(List<Ticket> ticket) {
-    //     this.ticket = new ArrayList<Ticket>();
-    // }
+    public void setTicket(List<Ticket> ticket) {
+        this.ticket = new ArrayList<Ticket>();
+    }
 
     public void setLieu(String lieu) {
         this.lieu = lieu;

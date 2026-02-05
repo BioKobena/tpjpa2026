@@ -1,0 +1,6 @@
+# .class 
+src/main/java/jpa/model/*.class
+
+# data 
+data/*
+/data/

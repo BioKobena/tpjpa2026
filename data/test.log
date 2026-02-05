@@ -4,20 +4,11 @@ COMMIT
 /*C2*/SET SCHEMA PUBLIC
 DISCONNECT
 /*C3*/SET SCHEMA PUBLIC
-DISCONNECT
-/*C4*/SET SCHEMA PUBLIC
-DISCONNECT
-/*C5*/SET SCHEMA PUBLIC
-DISCONNECT
-/*C6*/SET SCHEMA PUBLIC
-DISCONNECT
-/*C7*/SET SCHEMA PUBLIC
 create sequence Concert_SEQ start with 1 increment by 50
 create sequence Ticket_SEQ start with 1 increment by 50
 create sequence User_SEQ start with 1 increment by 50
 create table Concert (id integer not null, nombre_place integer not null, popularite integer not null, date varchar(255), description varchar(255), genre_musicale varchar(255), lieu varchar(255), primary key (id))
-create table Ticket (id integer not null, prix integer not null, primary key (id))
+create table Ticket (concert_id integer unique, id integer not null, prix integer not null, primary key (id))
 create table User (age integer not null, id integer not null, DTYPE varchar(31) not null, genre varchar(255), nationalite varchar(255), nom varchar(255), prenom varchar(255), primary key (id))
-DISCONNECT
-/*C8*/SET SCHEMA PUBLIC
+alter table Ticket add constraint FKin9kj2wiejns9ptuw1pt351kg foreign key (concert_id) references Concert
 DISCONNECT
