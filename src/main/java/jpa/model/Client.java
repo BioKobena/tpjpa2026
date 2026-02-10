@@ -6,6 +6,7 @@ import jakarta.persistence.Entity;
 public class Client extends User {
 
     private String compte_bancaire;
+    
     public Client() {
     }
 

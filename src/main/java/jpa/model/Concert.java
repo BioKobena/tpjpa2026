@@ -8,6 +8,7 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 
 @Entity
@@ -22,14 +23,20 @@ public class Concert implements Serializable {
     private String description;
     private int popularite;
     private int nombre_place;
+
+    @ManyToMany
+    private Artiste artiste;
+
     @OneToMany(mappedBy = "concert", cascade = CascadeType.PERSIST)
-    private List<Ticket> ticket = new ArrayList<Ticket>();
+    private List<Ticket> ticket;
 
     public Concert() {
+        this.ticket = new ArrayList<>();
     }
 
     public Concert(String lieu, String date, String genre_musicale, String description, int popularite,
             int nombre_place, Ticket ticket) {
+        this.ticket = new ArrayList<Ticket>();
         this.lieu = lieu;
         this.date = date;
         this.genre_musicale = genre_musicale;

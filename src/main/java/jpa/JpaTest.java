@@ -2,6 +2,7 @@ package jpa;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
+import jpa.dao.ConcertDao;
 import jpa.model.Concert;
 
 public class JpaTest {
@@ -17,24 +18,28 @@ public class JpaTest {
 	 */
 	public static void main(String[] args) {
 		EntityManager manager = EntityManagerHelper.getEntityManager();
-		Concert concert = new Concert();
+
 		JpaTest test = new JpaTest(manager);
 
+		Concert c = new Concert();
+		ConcertDao concertDao = new ConcertDao();
 		EntityTransaction tx = manager.getTransaction();
-		tx.begin();
+		// tx.begin();
+
 		try {
-			concert.setDate("15/04/2026");
-			concert.setDescription("Concert");
-			concert.setGenreMusicale("Gospel");
-			concert.setLieu("Rennes");
-			concert.setNombrePlace(20);
-			concert.setPopularite(5);
-			manager.persist(concert);
+			c.setLieu("lieu");
+			c.setDate("15/2/2000");
+			c.setGenreMusicale("Gospel");
+			c.setDescription("Description");
+			c.setPopularite(5);
+			c.setNombrePlace(200);
+			concertDao.save(c);
+			manager.persist(c);
 			// TODO create and persist entity
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		tx.commit();
+		// tx.commit();
 
 		manager.close();
 		EntityManagerHelper.closeEntityManagerFactory();

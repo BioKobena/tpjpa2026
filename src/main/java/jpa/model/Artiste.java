@@ -1,10 +1,16 @@
 package jpa.model;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.ManyToMany;
 
 @Entity
 public class Artiste extends User {
     private String nationalite;
+
+
+    @ManyToMany
+    private Concert concert;
+
 
     public Artiste() {}
 
