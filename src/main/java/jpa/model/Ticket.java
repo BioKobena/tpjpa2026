@@ -19,7 +19,7 @@ public class Ticket implements Serializable {
     private Concert concert;
 
     @OneToOne
-    private User user;
+    private Client client;
 
     public Ticket() {
     }

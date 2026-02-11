@@ -1,14 +1,14 @@
 package jpa.model;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToOne;
 
 @Entity
 public class Artiste extends User {
     private String nationalite;
 
 
-    @ManyToMany
+    @OneToOne
     private Concert concert;
 
 

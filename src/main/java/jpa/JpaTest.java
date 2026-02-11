@@ -34,7 +34,6 @@ public class JpaTest {
 			c.setPopularite(5);
 			c.setNombrePlace(200);
 			concertDao.save(c);
-			manager.persist(c);
 			// TODO create and persist entity
 		} catch (Exception e) {
 			e.printStackTrace();

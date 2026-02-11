@@ -1,12 +1,15 @@
 package jpa.model;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.OneToOne;
 
 @Entity
 public class Client extends User {
 
     private String compte_bancaire;
     
+    @OneToOne
+    private Ticket ticket;
     public Client() {
     }
 

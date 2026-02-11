@@ -2,6 +2,7 @@ package jpa.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import jakarta.persistence.CascadeType;
@@ -24,8 +25,8 @@ public class Concert implements Serializable {
     private int popularite;
     private int nombre_place;
 
-    @ManyToMany
-    private Artiste artiste;
+    @OneToMany
+    private Collection<Artiste> artiste;
 
     @OneToMany(mappedBy = "concert", cascade = CascadeType.PERSIST)
     private List<Ticket> ticket;
