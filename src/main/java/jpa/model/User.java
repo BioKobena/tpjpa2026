@@ -18,7 +18,6 @@ public class User implements Serializable {
     private String nom;
     private String prenom;
     private String genre;
-    
     private int age;
 
     public User() {
