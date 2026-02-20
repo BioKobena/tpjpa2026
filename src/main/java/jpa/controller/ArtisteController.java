@@ -1,15 +1,15 @@
 package jpa.controller;
 
 import java.util.Collection;
-import jpa.dao.ArtisteDao;
-import io.swagger.v3.oas.annotations.Parameter;
-import jakarta.ws.rs.POST;
+
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.Response;
+import jpa.dao.ArtisteDao;
 import jpa.model.Artiste;
 
 @Path("artiste")
