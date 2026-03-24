@@ -7,15 +7,16 @@ import jpa.dao.ConcertDao;
 import jpa.model.Concert;
 
 public class ClientController {
-    
+
     private final ConcertDao concertDao = new ConcertDao();
 
     @POST
     @Consumes("application/json")
     public Response createConcert(
-            // @Parameter(description = "Concert object that needs to be added to the store", required = true)
-             Concert concert) {
-        Concert c= new Concert();
+            // @Parameter(description = "Concert object that needs to be added to the
+            // store", required = true)
+            Concert concert) {
+        Concert c = new Concert();
         c.setDate(concert.getDate());
         c.setDescription(concert.getDescription());
         c.setGenreMusicale(concert.getGenreMusicale());
@@ -26,4 +27,7 @@ public class ClientController {
         return Response.ok().entity(c).build();
         // return Response.ok().entity("SUCCESS").build();
     }
+
+    // @GET
+    // @Consumes("application/json")
 }
