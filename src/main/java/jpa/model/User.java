@@ -2,14 +2,23 @@ package jpa.model;
 
 import java.io.Serializable;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
 
+// @Entity
+// @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "@type")
+@JsonSubTypes({
+    @JsonSubTypes.Type(value = Artiste.class, name = "Artiste")
+})
 public class User implements Serializable {
 
     @Id
@@ -67,3 +76,7 @@ public class User implements Serializable {
     }
 
 }
+
+
+// public record UserDTO(Long id, String name, String email) {
+// }

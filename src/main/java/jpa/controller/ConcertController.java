@@ -13,9 +13,11 @@ import jpa.dao.ConcertDao;
 import jpa.model.Concert;
 
 @Path("/concert")
+@Produces({ "application/json", "application/xml" })
 public class ConcertController {
 
     private final ConcertDao concertDao = new ConcertDao();
+
     @GET
     @Path("/all")
     @Produces(MediaType.APPLICATION_JSON)
@@ -24,20 +26,17 @@ public class ConcertController {
         // listConcert = concertDao.findAll();
         // Collection<Concert> c = concertDao.findAll();
         // for (Collection<Concert> c : listConcert) {
-        //     // System.out.println(con);
+        // // System.out.println(con);
         // }
         // for (Concert concert : c) {
-        //     System.out.print(concert);
+        // System.out.print(concert);
         // }
         return concertDao.findAll();
     }
 
     @POST
     @Consumes("application/json")
-    public Response createConcert(
-            // @Parameter(description = "Concert object that needs to be added to the
-            // store", required = true)
-            Concert concert) {
+    public Response createConcert(Concert concert) {
         Concert c = new Concert();
         c.setDate(concert.getDate());
         c.setDescription(concert.getDescription());
@@ -46,7 +45,25 @@ public class ConcertController {
         c.setNombrePlace(concert.getNombrePlace());
         c.setPopularite(concert.getPopularite());
         concertDao.save(c);
-        return Response.ok().entity(c).build();
-        // return Response.ok().entity("SUCCESS").build();
+        List<Concert> listConcert = this.concertDao.findAll();
+        return Response.status(200).entity(listConcert).type(MediaType.APPLICATION_JSON).build();
     }
+
+    // @PUT
+    // @Path("/concertId")
+    // public Response updateConcert(@PathParam("concertId") Concert c) {
+    // Concert concert = this.concertDao.update(c);
+    // return Response.ok().status(200).entity(concert).build();
+
+    // }
+
+    // @DELETE
+    // @Path("/concertId")
+    // public Response deleteConcertById(Long concertId) {
+
+    // if (concertId == null)
+    // return Response.status(404).build();
+    // this.concertDao.deleteById(concertId);
+    // return Response.ok().status(200).build();
+    // }
 }

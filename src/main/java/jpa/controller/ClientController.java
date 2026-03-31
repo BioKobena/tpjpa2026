@@ -1,33 +1,77 @@
 package jpa.controller;
 
-import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.core.Response;
-import jpa.dao.ConcertDao;
-import jpa.model.Concert;
+import java.util.List;
 
+import io.swagger.v3.oas.annotations.Parameter;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.DELETE;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+import jpa.dao.ClientDao;
+import jpa.model.Client;
+
+@Path("client")
+@Produces({ "application/json", "application/xml" })
 public class ClientController {
 
-    private final ConcertDao concertDao = new ConcertDao();
+    private final ClientDao clientDao = new ClientDao();
 
     @POST
     @Consumes("application/json")
-    public Response createConcert(
-            // @Parameter(description = "Concert object that needs to be added to the
-            // store", required = true)
-            Concert concert) {
-        Concert c = new Concert();
-        c.setDate(concert.getDate());
-        c.setDescription(concert.getDescription());
-        c.setGenreMusicale(concert.getGenreMusicale());
-        c.setLieu(concert.getLieu());
-        c.setNombrePlace(concert.getNombrePlace());
-        c.setPopularite(concert.getPopularite());
-        concertDao.save(c);
-        return Response.ok().entity(c).build();
-        // return Response.ok().entity("SUCCESS").build();
+    public Response createClient(Client client) {
+        Client c = new Client();
+        c.setAge(client.getAge());
+        c.setCompteBancaire(client.getCompteBancaire());
+        c.setGenre(client.getGenre());
+        c.setNom(client.getNom());
+        c.setPrenom(client.getPrenom());
+        c.setAge(client.getAge());
+        clientDao.save(c);
+
+        List<Client> listClient = this.clientDao.findAll();
+        return Response.ok().entity(listClient).type(MediaType.APPLICATION_JSON).build();
     }
 
-    // @GET
-    // @Consumes("application/json")
+    @GET
+    @Consumes("application/json")
+    public List<Client> getAllClient() {
+        List<Client> listClient = this.clientDao.findAll();
+
+        return listClient;
+    }
+
+    @GET
+    @Consumes("application/json")
+    public Client getClientById(@Parameter(description = "", required = true) String id) {
+        Client listClient = this.clientDao.findOne(id);
+        return listClient;
+    }
+
+    @GET
+    @Consumes("application/json")
+    public Client getClientByEmail(@Parameter(description = "", required = true) String email) {
+        Client cl = this.clientDao.getClientByEmail(email);
+        return cl;
+    }
+
+    @PUT
+    public Response updateClient(Client user) {
+        Client cl = this.clientDao.update(user);
+        return Response.ok().status(200).entity(cl).build();
+    }
+
+    @DELETE
+    public Response deleteClient(String id) {
+        if (id == null)
+            return Response.ok().status(404).build();
+        this.clientDao.deleteById(id);
+
+        return Response.ok().status(200).build();
+    }
+
 }

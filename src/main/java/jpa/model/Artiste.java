@@ -5,6 +5,7 @@ import jakarta.persistence.OneToOne;
 
 @Entity
 public class Artiste extends User {
+    
     private String nationalite;
 
 
