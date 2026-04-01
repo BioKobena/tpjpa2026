@@ -11,6 +11,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jpa.dao.ConcertDao;
 import jpa.model.Concert;
+import jpa.model.Ticket;
 
 @Path("/concert")
 @Produces({ "application/json", "application/xml" })
@@ -38,6 +39,7 @@ public class ConcertController {
     @Consumes("application/json")
     public Response createConcert(Concert concert) {
         Concert c = new Concert();
+        Ticket ticket;
         c.setDate(concert.getDate());
         c.setDescription(concert.getDescription());
         c.setGenreMusicale(concert.getGenreMusicale());
@@ -45,6 +47,11 @@ public class ConcertController {
         c.setNombrePlace(concert.getNombrePlace());
         c.setPopularite(concert.getPopularite());
         concertDao.save(c);
+
+        for (int i = 0; i < concert.getNombrePlace(); i++) {
+            ticket = new Ticket();
+            ticket.setConcert(concert);
+        }
         List<Concert> listConcert = this.concertDao.findAll();
         return Response.status(200).entity(listConcert).type(MediaType.APPLICATION_JSON).build();
     }

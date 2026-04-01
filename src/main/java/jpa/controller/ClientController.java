@@ -14,6 +14,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jpa.dao.ClientDao;
 import jpa.model.Client;
+import jpa.model.DTO.ClientDTO;
 
 @Path("client")
 @Produces({ "application/json", "application/xml" })
@@ -23,20 +24,23 @@ public class ClientController {
 
     @POST
     @Consumes("application/json")
-    public Response createClient(Client client) {
+    public Response createClient(ClientDTO dto) {
         Client c = new Client();
-        c.setAge(client.getAge());
-        c.setCompteBancaire(client.getCompteBancaire());
-        c.setGenre(client.getGenre());
-        c.setNom(client.getNom());
-        c.setPrenom(client.getPrenom());
-        c.setAge(client.getAge());
+        c.setAge(dto.age);
+        c.setCompteBancaire(dto.compte_bancaire);
+        c.setGenre(dto.genre);
+        c.setNom(dto.nom);
+        c.setPrenom(dto.prenom);
         clientDao.save(c);
 
         List<Client> listClient = this.clientDao.findAll();
         return Response.ok().entity(listClient).type(MediaType.APPLICATION_JSON).build();
     }
 
+    @POST
+    public Response buyTicket(ClientDTO dto){
+        return Response.ok().build();
+    }
     @GET
     @Consumes("application/json")
     public List<Client> getAllClient() {
