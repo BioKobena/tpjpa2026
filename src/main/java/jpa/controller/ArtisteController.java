@@ -4,9 +4,12 @@ import java.util.Collection;
 import java.util.List;
 
 import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -25,11 +28,11 @@ public class ArtisteController {
         System.out.println("Début : Création de l'artiste");
 
         Artiste a = new Artiste();
-        a.setAge(dto.age);
-        a.setGenre(dto.genre);
-        a.setNationalite(dto.nationalite);
-        a.setNom(dto.nom);
-        a.setPrenom(dto.prenom);
+        a.setAge(dto.getAge());
+        a.setGenre(dto.getGenre());
+        a.setNationalite(dto.getNationalite());
+        a.setNom(dto.getNom());
+        a.setPrenom(dto.getPrenom());
 
         artisteDao.save(a);
 
@@ -39,39 +42,36 @@ public class ArtisteController {
     }
 
     @GET
-    @Path("/tous")
+    @Path("/")
     public Collection<Artiste> getArtiste() {
-        return artisteDao.findAll();
+        Collection<Artiste> artistes = this.artisteDao.findAll();
+        return artistes;
     }
 
-    // @GET
-    // @Path("/artisteId")
-    // public Artiste getPet(@PathParam("artisteId") Long artisteId) {
-    // return artisteDao.findOne(artisteId);
-    // }
+    @GET
+    @Path("/getArtist/{artisteId}")
+    public Artiste getPet(@PathParam("artisteId") Long artisteId) {
+        return artisteDao.findOne(artisteId);
+    }
 
-    // @PUT
-    // @Path("/artisteId")
-    // public Response updateArtiste(@PathParam("id") Artiste artiste) {
+    @PUT
+    @Path("/update/{artisteId}")
+    public Response updateArtiste(@PathParam("id") Artiste artiste) {
 
-    // if (artiste == null)
-    // return Response.status(404).build();
-    // Artiste a = this.artisteDao.update(artiste);
+        if (artiste == null)
+            return Response.status(404).build();
+        Artiste a = this.artisteDao.update(artiste);
 
-    // return Response.ok().status(200).entity(a).build();
-    // }
+        return Response.ok().status(200).entity(a).build();
+    }
 
-    // @DELETE
-    // @Path("/artisteId")
-    // public Response deleteArtiste(@PathParam("artisteId") Artiste a) {
+    @DELETE
+    @Path("/delete/{artisteId}")
+    public Response deleteArtiste(@PathParam("artisteId") Artiste a) {
 
-    // if (a == null)
-    // return Response.status(404).build();
-    // this.artisteDao.delete(a);
-    // return Response.ok().status(200).build();
-    // }
-
-    public ArtisteDao getArtisteDao() {
-        return artisteDao;
+        if (a == null)
+            return Response.status(404).build();
+        this.artisteDao.delete(a);
+        return Response.ok().status(200).build();
     }
 }

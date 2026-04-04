@@ -3,74 +3,92 @@ package jpa.controller;
 import java.util.List;
 
 import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import jpa.dao.ArtisteDao;
 import jpa.dao.ConcertDao;
+import jpa.model.Artiste;
 import jpa.model.Concert;
-import jpa.model.Ticket;
+import jpa.model.DTO.AddArtistesDTO;
+import jpa.model.DTO.ConcertDTO;
 
 @Path("/concert")
 @Produces({ "application/json", "application/xml" })
 public class ConcertController {
 
     private final ConcertDao concertDao = new ConcertDao();
+    private final ArtisteDao artisteDao = new ArtisteDao();
+
+    @POST
+    @Consumes("application/json")
+    public Response createConcert(ConcertDTO dto) {
+        Concert concert = new Concert();
+        concert.setLieu(dto.getLieu());
+        concert.setDate(dto.getDate());
+        concert.setGenreMusicale(dto.getGenreMusicale());
+        concert.setDescription(dto.getDescription());
+        concert.setPopularite(dto.getPopularite());
+        concert.setNombrePlace(dto.getNombrePlace());
+        concert.setPrixTicket(dto.getPrixTicket());
+
+        concertDao.save(concert);
+        concert.createTickets();
+        concertDao.save(concert);
+
+        List<Concert> listConcert = concertDao.findAll();
+        return Response.ok().entity(listConcert).type(MediaType.APPLICATION_JSON).build();
+    }
 
     @GET
     @Path("/all")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Concert> getConcert() {
-        // List<Concert> listConcert = new ArrayList<Concert>();
-        // listConcert = concertDao.findAll();
-        // Collection<Concert> c = concertDao.findAll();
-        // for (Collection<Concert> c : listConcert) {
-        // // System.out.println(con);
-        // }
-        // for (Concert concert : c) {
-        // System.out.print(concert);
-        // }
-        return concertDao.findAll();
+    public Response getConcert() {
+        List<Concert> concerts = this.concertDao.findAll();
+        return Response.ok().status(200).entity(concerts).type(MediaType.APPLICATION_JSON).build();
     }
 
     @POST
+    @Path("/{id}/artistes")
     @Consumes("application/json")
-    public Response createConcert(Concert concert) {
-        Concert c = new Concert();
-        Ticket ticket;
-        c.setDate(concert.getDate());
-        c.setDescription(concert.getDescription());
-        c.setGenreMusicale(concert.getGenreMusicale());
-        c.setLieu(concert.getLieu());
-        c.setNombrePlace(concert.getNombrePlace());
-        c.setPopularite(concert.getPopularite());
-        concertDao.save(c);
+    public Response addArtistes(@PathParam("id") Long concertId,
+            AddArtistesDTO dto) {
 
-        for (int i = 0; i < concert.getNombrePlace(); i++) {
-            ticket = new Ticket();
-            ticket.setConcert(concert);
+        Concert concert = concertDao.findOne(concertId);
+        if (concert == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
         }
-        List<Concert> listConcert = this.concertDao.findAll();
-        return Response.status(200).entity(listConcert).type(MediaType.APPLICATION_JSON).build();
+
+        for (Long artisteId : dto.getArtisteIds()) {
+            Artiste artiste = artisteDao.findOne(artisteId);
+            concert.addArtiste(artiste);
+        }
+
+        concertDao.save(concert);
+
+        List<Artiste> getAllArtistes = concert.getArtists();
+        return Response.ok().entity(getAllArtistes).type(MediaType.APPLICATION_JSON).build();
     }
 
-    // @PUT
-    // @Path("/concertId")
-    // public Response updateConcert(@PathParam("concertId") Concert c) {
-    // Concert concert = this.concertDao.update(c);
-    // return Response.ok().status(200).entity(concert).build();
+    @PUT
+    @Path("/update/{concertId}")
+    public Response updateConcert(@PathParam("concertId") Concert c) {
+        if (c == null)
+            return Response.status(Response.Status.NOT_FOUND).entity("Ce concert n'existe pas").build();
+        Concert concert = this.concertDao.update(c);
+        return Response.ok().status(200).entity(concert).build();
+    }
 
-    // }
-
-    // @DELETE
-    // @Path("/concertId")
-    // public Response deleteConcertById(Long concertId) {
-
-    // if (concertId == null)
-    // return Response.status(404).build();
-    // this.concertDao.deleteById(concertId);
-    // return Response.ok().status(200).build();
-    // }
+    @DELETE
+    @Path("/delete/{concertId}")
+    public Response deleteConcertById(@PathParam("concertId") int concertId) {
+        this.concertDao.deleteById(concertId);
+        return Response.ok().status(200).build();
+    }
 }

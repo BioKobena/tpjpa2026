@@ -2,8 +2,9 @@ package jpa.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -23,40 +24,30 @@ public class Concert implements Serializable {
     private String description;
     private int popularite;
     private int nombre_place;
-
-    @OneToMany
-    private Collection<Artiste> artiste;
+    private int prixTicket;
 
     @OneToMany(mappedBy = "concert", cascade = CascadeType.PERSIST)
-    private List<Ticket> ticket;
+    private List<Artiste> artistes = new ArrayList<>();
+
+    @OneToMany(mappedBy = "concert", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<Ticket> tickets = new ArrayList<>();
 
     public Concert() {
-        this.ticket = new ArrayList<>();
     }
 
     public Concert(String lieu, String date, String genre_musicale, String description, int popularite,
-            int nombre_place, Ticket ticket) {
-        this.ticket = new ArrayList<Ticket>();
+            int nombre_place) {
         this.lieu = lieu;
         this.date = date;
         this.genre_musicale = genre_musicale;
         this.description = description;
         this.popularite = popularite;
         this.nombre_place = nombre_place;
-        this.ticket = new ArrayList<Ticket>();
-
     }
 
     public int getId() {
         return this.id;
-    }
-
-    public List<Ticket> getTicket() {
-        return this.ticket;
-    }
-
-    public void setTicket(List<Ticket> ticket) {
-        this.ticket = new ArrayList<Ticket>();
     }
 
     public void setLieu(String lieu) {
@@ -65,6 +56,14 @@ public class Concert implements Serializable {
 
     public String getLieu() {
         return this.lieu;
+    }
+
+    public List<Ticket> getTickets() {
+        return this.tickets;
+    }
+
+    public List<Artiste> getArtists() {
+        return this.artistes;
     }
 
     public void setDate(String date) {
@@ -105,6 +104,38 @@ public class Concert implements Serializable {
 
     public int getNombrePlace() {
         return this.nombre_place;
+    }
+
+    public void setArtistes(List<Artiste> artistes) {
+        this.artistes.clear();
+        if (artistes != null) {
+            this.artistes.addAll(artistes);
+        }
+    }
+
+    public int getPrixTicket() {
+        return this.prixTicket;
+    }
+
+    public void setPrixTicket(int prixTicket) {
+        this.prixTicket = prixTicket;
+    }
+
+    public void addArtiste(Artiste artiste) {
+        artistes.add(artiste);
+        artiste.setConcert(this);
+    }
+
+    public void createTickets() {
+        if (tickets.isEmpty() && nombre_place > 0 && prixTicket > 0) {
+            for (int i = 1; i <= nombre_place; i++) {
+                Ticket ticket = new Ticket();
+                ticket.setNumero("T" + id + "-" + String.format("%04d", i));
+                ticket.setPrix(prixTicket);
+                ticket.setConcert(this);
+                tickets.add(ticket);
+            }
+        }
     }
 
 }

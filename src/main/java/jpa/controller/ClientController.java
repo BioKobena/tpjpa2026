@@ -37,23 +37,11 @@ public class ClientController {
         return Response.ok().entity(listClient).type(MediaType.APPLICATION_JSON).build();
     }
 
-    @POST
-    public Response buyTicket(ClientDTO dto){
-        return Response.ok().build();
-    }
     @GET
     @Consumes("application/json")
-    public List<Client> getAllClient() {
+    public Response getAllClient() {
         List<Client> listClient = this.clientDao.findAll();
-
-        return listClient;
-    }
-
-    @GET
-    @Consumes("application/json")
-    public Client getClientById(@Parameter(description = "", required = true) String id) {
-        Client listClient = this.clientDao.findOne(id);
-        return listClient;
+        return Response.ok(listClient, MediaType.APPLICATION_JSON).build();
     }
 
     @GET
@@ -74,7 +62,6 @@ public class ClientController {
         if (id == null)
             return Response.ok().status(404).build();
         this.clientDao.deleteById(id);
-
         return Response.ok().status(200).build();
     }
 

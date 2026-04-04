@@ -6,8 +6,8 @@ import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
-import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -38,34 +38,22 @@ public class GestionnaireController {
     @GET
     @Path("/gestionnaires")
     @Consumes("application/json")
-    public List<Gestionnaire> getGestionnaire() {
+    public Response getGestionnaire() {
         List<Gestionnaire> gestionnaires = this.gestionnaireDao.findAll();
-        return gestionnaires;
+        return Response.ok(gestionnaires).build();
     }
 
     @GET
-    @Path("/gestionnaireId")
-    public Gestionnaire getGestionnaireById(int gestionnaireId) {
+    @Path("/getGestionnaire/{gestionnaireId}")
+    public Response getGestionnaireById(@PathParam("gestionnaireId") int gestionnaireId) {
         Gestionnaire gId = this.gestionnaireDao.findOne(gestionnaireId);
-        return gId;
+        return Response.ok(gId).status(200).build();
     }
 
     @DELETE
-    @Path("/gestionnaireId")
-    public Response deleteGestionnaire(int gestionnaireId) {
+    @Path("/{gestionnaireId}")
+    public Response deleteGestionnaire(@PathParam("gestionnaireId") int gestionnaireId) {
         this.gestionnaireDao.deleteById(gestionnaireId);
         return Response.ok().status(200).build();
-    }
-
-    @PUT
-    @Path("/gestionnaireId")
-    public Response updateGestionnaire(Gestionnaire g) {
-
-        if (g == null)
-            return Response.ok().status(404).build();
-
-        this.gestionnaireDao.update(g);
-
-        return Response.ok().status(200).entity(g).build();
     }
 }

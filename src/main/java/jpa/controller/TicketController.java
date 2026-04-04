@@ -1,15 +1,17 @@
 package jpa.controller;
 
-import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.DELETE;
+import java.util.List;
+
 import jakarta.ws.rs.GET;
-import jakarta.ws.rs.POST;
 import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import jpa.dao.ClientDao;
 import jpa.dao.TicketDao;
-import jpa.model.Concert;
+import jpa.model.Client;
 import jpa.model.Ticket;
 
 @Path("/tickets")
@@ -17,42 +19,43 @@ import jpa.model.Ticket;
 public class TicketController {
 
     private final TicketDao ticketDao = new TicketDao();
-
-    @POST
-    @Consumes
-    public Response createTicket(Ticket ticket, Concert concert) {
-        Ticket t = new Ticket();
-        t.setConcert(ticket.getConcert());
-        t.setPrix(ticket.getPrix());
-
-        // concert.getNombrePlace()
-        ticketDao.save(t);
-        return Response.ok().status(200).entity(t).build();
-    }
+    private final ClientDao clientDao = new ClientDao();
 
     @GET
-    @Path("/ticketById")
-    public Ticket getTicketByUserId(int ticketById) {
-        Ticket tickId = this.ticketDao.findOne(ticketById);
-        return tickId;
-    }
-
-    @DELETE
-    @Path("/ticketId")
-    public Response deleteTicketById(Long ticketId) {
-        if (ticketId == null)
-            return Response.ok().status(404).build();
-        this.ticketDao.deleteById(ticketId);
-        return Response.ok().status(200).build();
+    @Path("/concert/{concertId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<Ticket> getTicketsByConcert(@PathParam("concertId") int concertId) {
+        return ticketDao.findByConcertId(concertId);
     }
 
     @PUT
-    public Response updateTicket(Ticket t) {
+    @Path("/buy/{ticketId}/client/{clientId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response acheterTicket(
+            @PathParam("ticketId") int ticketId,
+            @PathParam("clientId") int clientId) {
+        Ticket ticket = ticketDao.findOne(ticketId);
+        Client client = clientDao.findOne(clientId);
 
-        if (t == null)
-            return Response.ok().status(404).build();
-        Ticket ticket = this.ticketDao.update(t);
+        if (ticket == null) {
+            return Response.status(404).entity("Ticket non trouvé").build();
+        }
+        if (client == null) {
+            return Response.status(404).entity("Client non trouvé").build();
+        }
 
-        return Response.ok().status(200).entity(ticket).build();
+        if (ticket.getClient() != null) {
+            return Response.status(409)
+                    .entity("Ticket déjà acheté par un client")
+                    .build();
+        }
+
+        ticket.setClient(client);
+        ticketDao.update(ticket);
+
+        return Response.ok()
+                .status(200)
+                .entity(ticket)
+                .build();
     }
 }
