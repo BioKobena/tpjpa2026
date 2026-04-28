@@ -8,9 +8,9 @@
 		<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 		<properties>
 			<property name="jakarta.persistence.jdbc.driver"
-				value="org.hsqldb.jdbcDriver" />
+				value="org.hsqldb.jdbc.JDBCDriver" />
 			<property name="jakarta.persistence.jdbc.url"
-				value="jdbc:hsqldb:hsql://localhost/" />
+				value="jdbc:hsqldb:file:./data/event-manage-dev;shutdown=true" />
 			<property name="jakarta.persistence.jdbc.user" value="sa" />
 			<property name="jakarta.persistence.jdbc.password" value="" />
 			<property
@@ -25,9 +25,9 @@
 		<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 		<properties>
 			<property name="jakarta.persistence.jdbc.driver"
-				value="org.hsqldb.jdbcDriver" />
+				value="org.hsqldb.jdbc.JDBCDriver" />
 			<property name="jakarta.persistence.jdbc.url"
-				value="jdbc:hsqldb:hsql://localhost/" />
+				value="jdbc:hsqldb:file:./data/event-manage-prod;shutdown=true" />
 			<property name="jakarta.persistence.jdbc.user" value="sa" />
 			<property name="jakarta.persistence.jdbc.password" value="" />
 			<property
