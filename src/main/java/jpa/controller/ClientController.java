@@ -9,6 +9,7 @@ import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -29,6 +30,7 @@ public class ClientController {
         c.setAge(dto.age);
         c.setCompteBancaire(dto.compte_bancaire);
         c.setGenre(dto.genre);
+        c.setEmail(dto.email);
         c.setNom(dto.nom);
         c.setPrenom(dto.prenom);
         clientDao.save(c);
@@ -38,30 +40,40 @@ public class ClientController {
     }
 
     @GET
-    @Consumes("application/json")
+    @Path("/all")
     public Response getAllClient() {
         List<Client> listClient = this.clientDao.findAll();
         return Response.ok(listClient, MediaType.APPLICATION_JSON).build();
     }
 
     @GET
-    @Consumes("application/json")
-    public Client getClientByEmail(@Parameter(description = "", required = true) String email) {
+    @Path("/email/{email}")
+    public Client getClientByEmail(@PathParam("email") @Parameter(description = "", required = true) String email) {
         Client cl = this.clientDao.getClientByEmail(email);
         return cl;
     }
 
     @PUT
-    public Response updateClient(Client user) {
+    @Path("/update/{clientId}")
+    @Consumes("application/json")
+    public Response updateClient(@PathParam("clientId") Long clientId, Client user) {
+        Client existing = this.clientDao.findOne(clientId);
+        if (existing == null) {
+            return Response.ok().status(404).build();
+        }
+        user.setId(clientId.intValue());
         Client cl = this.clientDao.update(user);
         return Response.ok().status(200).entity(cl).build();
     }
 
     @DELETE
-    public Response deleteClient(String id) {
-        if (id == null)
+    @Path("/delete/{clientId}")
+    public Response deleteClient(@PathParam("clientId") Long clientId) {
+        Client existing = this.clientDao.findOne(clientId);
+        if (existing == null) {
             return Response.ok().status(404).build();
-        this.clientDao.deleteById(id);
+        }
+        this.clientDao.delete(existing);
         return Response.ok().status(200).build();
     }
 

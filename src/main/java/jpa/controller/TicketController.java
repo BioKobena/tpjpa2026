@@ -1,7 +1,9 @@
 package jpa.controller;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
+import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
@@ -20,6 +22,22 @@ public class TicketController {
 
     private final TicketDao ticketDao = new TicketDao();
     private final ClientDao clientDao = new ClientDao();
+
+    @GET
+    @Path("/all")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<Ticket> getAllTickets() {
+        return ticketDao.findAll();
+    }
+
+    @GET
+    @Path("/client/{clientId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<Ticket> getTicketsByClient(@PathParam("clientId") int clientId) {
+        return ticketDao.findAll().stream()
+                .filter(ticket -> ticket.getClient() != null && ticket.getClient().getId() == clientId)
+                .collect(Collectors.toList());
+    }
 
     @GET
     @Path("/concert/{concertId}")
@@ -57,5 +75,16 @@ public class TicketController {
                 .status(200)
                 .entity(ticket)
                 .build();
+    }
+
+    @DELETE
+    @Path("/delete/{ticketId}")
+    public Response deleteTicket(@PathParam("ticketId") int ticketId) {
+        Ticket ticket = ticketDao.findOne(ticketId);
+        if (ticket == null) {
+            return Response.status(404).entity("Ticket non trouvé").build();
+        }
+        ticketDao.delete(ticket);
+        return Response.ok().status(200).build();
     }
 }

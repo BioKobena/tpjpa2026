@@ -22,6 +22,9 @@ public class ArtisteDTO {
     @Size(max = 20, message = "Genre max 20 caractères")
     private String genre;
 
+    @Size(max = 120, message = "Email max 120 caractères")
+    private String email;
+
     @Min(value = 16, message = "Âge minimum 16 ans")
     @Max(value = 100, message = "Âge maximum 100 ans")
     private int age;
@@ -40,6 +43,10 @@ public class ArtisteDTO {
 
     public String getGenre() {
         return genre;
+    }
+
+    public String getEmail() {
+        return email;
     }
 
     public int getAge() {
@@ -62,6 +69,10 @@ public class ArtisteDTO {
 
     public void setGenre(String genre) {
         this.genre = genre;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public void setAge(int age) {

@@ -54,6 +54,17 @@ public class ConcertController {
         return Response.ok().status(200).entity(concerts).type(MediaType.APPLICATION_JSON).build();
     }
 
+    @GET
+    @Path("/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getConcertById(@PathParam("id") Long id) {
+        Concert concert = concertDao.findOne(id);
+        if (concert == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        return Response.ok(concert).build();
+    }
+
     @POST
     @Path("/{id}/artistes")
     @Consumes("application/json")
@@ -78,11 +89,23 @@ public class ConcertController {
 
     @PUT
     @Path("/update/{concertId}")
-    public Response updateConcert(@PathParam("concertId") Concert c) {
-        if (c == null)
+    @Consumes("application/json")
+    public Response updateConcert(@PathParam("concertId") Long concertId, ConcertDTO dto) {
+        Concert concert = concertDao.findOne(concertId);
+        if (concert == null) {
             return Response.status(Response.Status.NOT_FOUND).entity("Ce concert n'existe pas").build();
-        Concert concert = this.concertDao.update(c);
-        return Response.ok().status(200).entity(concert).build();
+        }
+
+        concert.setLieu(dto.getLieu());
+        concert.setDate(dto.getDate());
+        concert.setGenreMusicale(dto.getGenreMusicale());
+        concert.setDescription(dto.getDescription());
+        concert.setPopularite(dto.getPopularite());
+        concert.setNombrePlace(dto.getNombrePlace());
+        concert.setPrixTicket(dto.getPrixTicket());
+
+        Concert updated = this.concertDao.update(concert);
+        return Response.ok().status(200).entity(updated).build();
     }
 
     @DELETE

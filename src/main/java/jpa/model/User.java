@@ -31,6 +31,7 @@ public class User implements Serializable {
     private String prenom;
     private String genre;
     private int age;
+    private String email;
 
     public User() {
     }
@@ -76,6 +77,14 @@ public class User implements Serializable {
 
     public void setAge(int age) {
         this.age = age;
+    }
+
+    public String getEmail() {
+        return this.email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
 }

@@ -30,6 +30,7 @@ public class ArtisteController {
         Artiste a = new Artiste();
         a.setAge(dto.getAge());
         a.setGenre(dto.getGenre());
+        a.setEmail(dto.getEmail());
         a.setNationalite(dto.getNationalite());
         a.setNom(dto.getNom());
         a.setPrenom(dto.getPrenom());
@@ -42,7 +43,7 @@ public class ArtisteController {
     }
 
     @GET
-    @Path("/")
+    @Path("/all")
     public Collection<Artiste> getArtiste() {
         Collection<Artiste> artistes = this.artisteDao.findAll();
         return artistes;
@@ -56,22 +57,31 @@ public class ArtisteController {
 
     @PUT
     @Path("/update/{artisteId}")
-    public Response updateArtiste(@PathParam("id") Artiste artiste) {
-
-        if (artiste == null)
+    @Consumes("application/json")
+    public Response updateArtiste(@PathParam("artisteId") Long artisteId, Artiste dto) {
+        Artiste artiste = artisteDao.findOne(artisteId);
+        if (artiste == null) {
             return Response.status(404).build();
-        Artiste a = this.artisteDao.update(artiste);
+        }
+        artiste.setNom(dto.getNom());
+        artiste.setPrenom(dto.getPrenom());
+        artiste.setGenre(dto.getGenre());
+        artiste.setAge(dto.getAge());
+        artiste.setNationalite(dto.getNationalite());
 
-        return Response.ok().status(200).entity(a).build();
+        Artiste updated = this.artisteDao.update(artiste);
+
+        return Response.ok().status(200).entity(updated).build();
     }
 
     @DELETE
     @Path("/delete/{artisteId}")
-    public Response deleteArtiste(@PathParam("artisteId") Artiste a) {
-
-        if (a == null)
+    public Response deleteArtiste(@PathParam("artisteId") Long artisteId) {
+        Artiste artiste = artisteDao.findOne(artisteId);
+        if (artiste == null) {
             return Response.status(404).build();
-        this.artisteDao.delete(a);
+        }
+        this.artisteDao.delete(artiste);
         return Response.ok().status(200).build();
     }
 }

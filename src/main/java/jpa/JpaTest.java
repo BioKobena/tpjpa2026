@@ -11,6 +11,7 @@ import jpa.controller.ClientController;
 import jpa.controller.ConcertController;
 import jpa.controller.GestionnaireController;
 import jpa.controller.TicketController;
+import jpa.CorsFilter;
 
 @ApplicationPath("/")
 public class JpaTest extends Application {
@@ -27,6 +28,7 @@ public class JpaTest extends Application {
 		clazzes.add(GestionnaireController.class);
 		clazzes.add(TicketController.class);
 		clazzes.add(ClientController.class);
+		clazzes.add(CorsFilter.class);
 		// clazzes.add(ConcertController.class);
 
 		return clazzes;

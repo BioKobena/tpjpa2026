@@ -29,6 +29,7 @@ public class GestionnaireController {
         g.setPrenom(dto.prenom);
         g.setGenre(dto.genre);
         g.setAge(dto.age);
+        g.setEmail(dto.email);
         g.setPermission(dto.permission);
         gestionnaireDao.save(g);
         List<Gestionnaire> listGesionnaire = this.gestionnaireDao.findAll();
