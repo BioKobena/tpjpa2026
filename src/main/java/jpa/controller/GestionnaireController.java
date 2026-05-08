@@ -6,6 +6,7 @@ import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
@@ -49,6 +50,36 @@ public class GestionnaireController {
     public Response getGestionnaireById(@PathParam("gestionnaireId") int gestionnaireId) {
         Gestionnaire gId = this.gestionnaireDao.findOne(gestionnaireId);
         return Response.ok(gId).status(200).build();
+    }
+
+    @GET
+    @Path("/email/{email}")
+    public Response getGestionnaireByEmail(@PathParam("email") String email) {
+        Gestionnaire gestionnaire = this.gestionnaireDao.getByEmail(email);
+        if (gestionnaire == null) {
+            return Response.status(404).build();
+        }
+        return Response.ok(gestionnaire).status(200).build();
+    }
+
+    @PUT
+    @Path("/update/{gestionnaireId}")
+    @Consumes("application/json")
+    public Response updateGestionnaire(@PathParam("gestionnaireId") int gestionnaireId, GestionnaireDTO dto) {
+        Gestionnaire gestionnaire = this.gestionnaireDao.findOne(gestionnaireId);
+        if (gestionnaire == null) {
+            return Response.status(404).build();
+        }
+
+        gestionnaire.setNom(dto.nom);
+        gestionnaire.setPrenom(dto.prenom);
+        gestionnaire.setGenre(dto.genre);
+        gestionnaire.setAge(dto.age);
+        gestionnaire.setEmail(dto.email);
+        gestionnaire.setPermission(dto.permission);
+
+        Gestionnaire updated = this.gestionnaireDao.update(gestionnaire);
+        return Response.ok(updated).status(200).build();
     }
 
     @DELETE

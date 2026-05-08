@@ -29,6 +29,10 @@ public class ConcertController {
     @POST
     @Consumes("application/json")
     public Response createConcert(ConcertDTO dto) {
+        if (dto.getArtisteIds() == null || dto.getArtisteIds().isEmpty()) {
+            return Response.status(400).entity("Un concert doit avoir au moins un artiste").build();
+        }
+
         Concert concert = new Concert();
         concert.setLieu(dto.getLieu());
         concert.setDate(dto.getDate());
@@ -37,6 +41,14 @@ public class ConcertController {
         concert.setPopularite(dto.getPopularite());
         concert.setNombrePlace(dto.getNombrePlace());
         concert.setPrixTicket(dto.getPrixTicket());
+
+        for (Long artisteId : dto.getArtisteIds()) {
+            Artiste artiste = artisteDao.findOne(artisteId);
+            if (artiste == null) {
+                return Response.status(404).entity("Artiste non trouvé: " + artisteId).build();
+            }
+            concert.addArtiste(artiste);
+        }
 
         concertDao.save(concert);
         concert.createTickets();
@@ -103,6 +115,17 @@ public class ConcertController {
         concert.setPopularite(dto.getPopularite());
         concert.setNombrePlace(dto.getNombrePlace());
         concert.setPrixTicket(dto.getPrixTicket());
+
+        if (dto.getArtisteIds() != null && !dto.getArtisteIds().isEmpty()) {
+            concert.getArtists().clear();
+            for (Long artisteId : dto.getArtisteIds()) {
+                Artiste artiste = artisteDao.findOne(artisteId);
+                if (artiste == null) {
+                    return Response.status(404).entity("Artiste non trouvé: " + artisteId).build();
+                }
+                concert.addArtiste(artiste);
+            }
+        }
 
         Concert updated = this.concertDao.update(concert);
         return Response.ok().status(200).entity(updated).build();

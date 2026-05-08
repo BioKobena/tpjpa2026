@@ -1,5 +1,8 @@
 package jpa.model.DTO;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -30,6 +33,7 @@ public class ConcertDTO {
     private int nombrePlace;
 
     private int prixTicket;
+    private List<Long> artisteIds = new ArrayList<>();
 
     public String getLieu() {
         return lieu;
@@ -61,6 +65,14 @@ public class ConcertDTO {
 
     public void setPrixTicket(int prixTicket) {
         this.prixTicket = prixTicket;
+    }
+
+    public List<Long> getArtisteIds() {
+        return this.artisteIds;
+    }
+
+    public void setArtisteIds(List<Long> artisteIds) {
+        this.artisteIds = artisteIds == null ? new ArrayList<>() : artisteIds;
     }
 
     public void setLieu(String lieu) {
